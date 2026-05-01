@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f1117">
+    <meta name="description" content="Plan tomorrow. Execute today. Reflect always.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DayScore">
+    <title>DayScore</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="icon" href="icons/icon-192.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Navigation -->
+        <nav id="main-nav">
+            <div class="nav-brand hidden-mobile">DayScore</div>
+            <div class="nav-links">
+                <a href="#/today" class="nav-item active" id="nav-today">
+                    <span class="nav-icon">☀️</span>
+                    <span class="nav-label">Today</span>
+                </a>
+                <a href="#/plan" class="nav-item" id="nav-plan">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">Plan</span>
+                </a>
+                <a href="#/history" class="nav-item" id="nav-history">
+                    <span class="nav-icon">📅</span>
+                    <span class="nav-label">History</span>
+                </a>
+                <a href="#/insights" class="nav-item" id="nav-insights">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Insights</span>
+                </a>
+                <a href="#/export" class="nav-item" id="nav-export">
+                    <span class="nav-icon">⬇️</span>
+                    <span class="nav-label">Export</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+
+            <!-- ===== TODAY VIEW ===== -->
+            <div id="view-today" class="view active">
+                <header class="view-header">
+                    <h1 id="today-date-header">Today</h1>
+                </header>
+
+                <!-- Progress Ring -->
+                <div class="progress-section" id="today-progress-section">
+                    <div class="progress-ring-container">
+                        <svg class="progress-ring" viewBox="0 0 120 120">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="52" />
+                            <circle class="progress-ring-fill" cx="60" cy="60" r="52" id="today-ring-fill" />
+                        </svg>
+                        <div class="progress-ring-text" id="today-ring-text">0%</div>
+                    </div>
+                    <div class="progress-stats" id="today-stats">
+                        <div class="stat-chip stat-done"><span class="stat-dot done"></span><span id="stat-done-count">0</span> Done</div>
+                        <div class="stat-chip stat-partial"><span class="stat-dot partial"></span><span id="stat-partial-count">0</span> Partial</div>
+                        <div class="stat-chip stat-notdone"><span class="stat-dot notdone"></span><span id="stat-notdone-count">0</span> Skipped</div>
+                    </div>
+                </div>
+
+                <!-- Today's Task List -->
+                <div id="today-task-list" class="task-list">
+                    <!-- Tasks rendered dynamically by app.js -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="today-empty" class="empty-state hidden">
+                    <div class="empty-icon">☀️</div>
+                    <h2>No tasks planned for today</h2>
+                    <p>Plan your day ahead — switch to the <strong>Plan</strong> tab to add tasks for tomorrow.</p>
+                    <a href="#/plan" class="btn btn-primary">Plan Tomorrow</a>
+                </div>
+
+                <!-- Add unplanned task to today -->
+                <button class="btn-fab" id="btn-add-today" title="Add task to today">+</button>
+            </div>
+
+            <!-- ===== PLAN TOMORROW VIEW ===== -->
+            <div id="view-plan" class="view">
+                <header class="view-header">
+                    <h1 id="plan-date-header">Plan Tomorrow</h1>
+                </header>
+
+                <!-- Add Task Form -->
+                <div class="add-task-form" id="plan-form">
+                    <div class="form-row">
+                        <input type="text" id="plan-task-title" class="input-title" placeholder="What do you want to do?" maxlength="200" autocomplete="off" />
+                        <button class="btn btn-primary btn-add" id="btn-add-plan" title="Add task">+</button>
+                    </div>
+                    <div class="form-extras" id="plan-form-extras">
+                        <div class="form-field">
+                            <label for="plan-task-category">Category</label>
+                            <input type="text" id="plan-task-category" list="tag-suggestions" placeholder="e.g. Work" maxlength="50" />
+                            <datalist id="tag-suggestions"></datalist>
+                        </div>
+                        <div class="form-field">
+                            <label for="plan-task-time">Est. minutes</label>
+                            <input type="number" id="plan-task-time" placeholder="30" min="1" max="480" />
+                        </div>
+                        <div class="form-field">
+                            <label>Priority</label>
+                            <div class="priority-toggle" id="plan-priority-toggle">
+                                <button class="priority-btn" data-priority="High">High</button>
+                                <button class="priority-btn active" data-priority="Medium">Med</button>
+                                <button class="priority-btn" data-priority="Low">Low</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planned Task List -->
+                <div id="plan-task-list" class="task-list">
+                    <!-- Tasks rendered dynamically -->
+                </div>
+
+                <!-- Plan Empty State -->
+                <div id="plan-empty" class="empty-state hidden">
+                    <div class="empty-icon">📋</div>
+                    <h2>No tasks yet</h2>
+                    <p>Add your first task above to start planning.</p>
+                </div>
+            </div>
+
+            <!-- ===== HISTORY VIEW ===== -->
+            <div id="view-history" class="view">
+                <header class="view-header">
+                    <h1>History</h1>
+                </header>
+
+                <div class="history-controls">
+                    <button class="btn-icon" id="history-prev" title="Previous Day">◀</button>
+                    <input type="date" id="history-date-picker" class="date-picker" />
+                    <button class="btn-icon" id="history-next" title="Next Day">▶</button>
+                </div>
+
+                <div id="history-summary" class="history-summary hidden">
+                    <div class="history-score">Score: <span id="history-score-val">0%</span></div>
+                    <div class="progress-stats" style="flex-direction: row; justify-content: center; margin-top: var(--spacing-sm);">
+                        <div class="stat-chip"><span class="stat-dot done"></span><span id="history-done-count">0</span></div>
+                        <div class="stat-chip"><span class="stat-dot partial"></span><span id="history-partial-count">0</span></div>
+                        <div class="stat-chip"><span class="stat-dot notdone"></span><span id="history-notdone-count">0</span></div>
+                    </div>
+                </div>
+
+                <div id="history-task-list" class="task-list read-only-list">
+                    <!-- Historical tasks rendered here -->
+                </div>
+
+                <div id="history-empty" class="empty-state hidden">
+                    <div class="empty-icon">📂</div>
+                    <h2>No data for this date</h2>
+                    <p>There are no tasks recorded for the selected day.</p>
+                </div>
+            </div>
+
+            <!-- ===== INSIGHTS VIEW ===== -->
+            <div id="view-insights" class="view">
+                <header class="view-header">
+                    <h1>Insights</h1>
+                </header>
+
+                <!-- Period Tabs -->
+                <div class="insights-tabs">
+                    <button class="tab-btn active" data-period="daily">Daily</button>
+                    <button class="tab-btn" data-period="weekly">Weekly</button>
+                    <button class="tab-btn" data-period="monthly">Monthly</button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="insights-summary" id="insights-summary">
+                    <div class="summary-card">
+                        <div class="summary-value" id="ins-score">—</div>
+                        <div class="summary-label">Avg Score</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="ins-total-tasks">—</div>
+                        <div class="summary-label">Total Tasks</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="ins-done-rate">—</div>
+                        <div class="summary-label">Done Rate</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value" id="ins-streak">—</div>
+                        <div class="summary-label">Active Days</div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <h2 class="chart-title" id="chart-title">Last 7 Days</h2>
+                    <div class="chart-container" id="insights-chart">
+                        <!-- Bars rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Category Breakdown -->
+                <div class="category-section" id="category-section">
+                    <h2 class="chart-title">Category Breakdown</h2>
+                    <div id="category-bars">
+                        <!-- Category bars rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Insights Empty -->
+                <div id="insights-empty" class="empty-state hidden">
+                    <div class="empty-icon">📊</div>
+                    <h2>No data yet</h2>
+                    <p>Complete a few days of tasks and your insights will appear here.</p>
+                </div>
+            </div>
+
+            <!-- ===== EXPORT VIEW ===== -->
+            <div id="view-export" class="view">
+                <header class="view-header">
+                    <h1>Export Data</h1>
+                </header>
+
+                <div class="export-container">
+                    <p class="export-desc">Download your productivity data as a CSV file for deep analysis in Excel, Google Sheets, or an AI tool.</p>
+                    
+                    <div class="export-form">
+                        <div class="form-group">
+                            <label>From Date</label>
+                            <input type="date" id="export-date-from" class="date-picker full-width" />
+                        </div>
+                        <div class="form-group">
+                            <label>To Date</label>
+                            <input type="date" id="export-date-to" class="date-picker full-width" />
+                        </div>
+                        <div class="form-group" style="margin-top: var(--spacing-lg);">
+                            <button id="btn-export-csv" class="btn-primary btn-full">
+                                Download CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Modal overlay for adding unplanned tasks to today -->
+        <div class="modal-overlay hidden" id="modal-overlay">
+            <div class="modal-sheet" id="modal-add-today">
+                <div class="modal-header">
+                    <h2>Add to Today</h2>
+                    <button class="modal-close" id="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <input type="text" id="modal-task-title" class="input-title" placeholder="Task title" maxlength="200" autocomplete="off" />
+                    </div>
+                    <div class="form-extras">
+                        <div class="form-field">
+                            <label for="modal-task-category">Category</label>
+                            <input type="text" id="modal-task-category" list="tag-suggestions-modal" placeholder="e.g. Work" maxlength="50" />
+                            <datalist id="tag-suggestions-modal"></datalist>
+                        </div>
+                        <div class="form-field">
+                            <label for="modal-task-time">Est. minutes</label>
+                            <input type="number" id="modal-task-time" placeholder="30" min="1" max="480" />
+                        </div>
+                        <div class="form-field">
+                            <label>Priority</label>
+                            <div class="priority-toggle" id="modal-priority-toggle">
+                                <button class="priority-btn" data-priority="High">High</button>
+                                <button class="priority-btn active" data-priority="Medium">Med</button>
+                                <button class="priority-btn" data-priority="Low">Low</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-full" id="btn-modal-save">Add Task</button>
+                    <p class="modal-note">This task will be marked as <em>unplanned</em> in your data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (loaded from CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- App Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/export.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+                    .catch(err => console.warn('[PWA] SW registration failed:', err));
+            });
+        }
+    </script>
+</body>
+</html>
